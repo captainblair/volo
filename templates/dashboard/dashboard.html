@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Volo Africa{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Welcome Section -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+        <p class="mt-2 text-gray-600">{{ user.get_role_display }} {% if user.department %}in {{ user.department.name }}{% endif %}</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" x-data="dashboardData()">
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-tasks text-2xl text-blue-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">My Tasks</dt>
+                            <dd class="text-lg font-medium text-gray-900" x-text="stats.myTasks">0</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-clock text-2xl text-yellow-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Pending Tasks</dt>
+                            <dd class="text-lg font-medium text-gray-900" x-text="stats.pendingTasks">0</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-envelope text-2xl text-green-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Unread Messages</dt>
+                            <dd class="text-lg font-medium text-gray-900" x-text="stats.unreadMessages">0</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-users text-2xl text-purple-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Team Members</dt>
+                            <dd class="text-lg font-medium text-gray-900" x-text="stats.teamMembers">0</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Recent Tasks -->
+        <div class="lg:col-span-2">
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Recent Tasks</h3>
+                </div>
+                <div class="p-6" x-data="{ tasks: [] }">
+                    <div x-show="tasks.length === 0" class="text-center py-8">
+                        <i class="fas fa-tasks text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">No recent tasks</p>
+                    </div>
+                    <div class="space-y-4" x-show="tasks.length > 0">
+                        <template x-for="task in tasks.slice(0, 5)">
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-medium text-gray-900" x-text="task.title"></h4>
+                                    <p class="text-sm text-gray-500" x-text="task.department"></p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                          :class="{
+                                              'bg-yellow-100 text-yellow-800': task.status === 'pending',
+                                              'bg-blue-100 text-blue-800': task.status === 'in_progress',
+                                              'bg-green-100 text-green-800': task.status === 'completed'
+                                          }" x-text="task.status.replace('_', ' ')"></span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                          :class="{
+                                              'bg-gray-100 text-gray-800': task.priority === 'low',
+                                              'bg-orange-100 text-orange-800': task.priority === 'medium',
+                                              'bg-red-100 text-red-800': task.priority === 'high'
+                                          }" x-text="task.priority"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="mt-6">
+                        <a href="{% url 'task_list' %}" class="text-primary hover:text-blue-700 text-sm font-medium">
+                            View all tasks <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions & Notifications -->
+        <div class="space-y-6">
+            <!-- Quick Actions -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Quick Actions</h3>
+                </div>
+                <div class="p-6 space-y-3">
+                    <button onclick="openCreateTaskModal()" class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-700">
+                        <i class="fas fa-plus mr-2"></i>Create Task
+                    </button>
+                    <button onclick="openSendMessageModal()" class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        <i class="fas fa-envelope mr-2"></i>Send Message
+                    </button>
+                    <a href="{% url 'chat' %}" class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        <i class="fas fa-comments mr-2"></i>Join Chat
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recent Notifications -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Recent Notifications</h3>
+                </div>
+                <div class="p-6" x-data="{ notifications: [] }">
+                    <div x-show="notifications.length === 0" class="text-center py-4">
+                        <i class="fas fa-bell text-2xl text-gray-300 mb-2"></i>
+                        <p class="text-gray-500 text-sm">No new notifications</p>
+                    </div>
+                    <div class="space-y-3" x-show="notifications.length > 0">
+                        <template x-for="notification in notifications.slice(0, 3)">
+                            <div class="p-3 bg-gray-50 rounded-lg" :class="{'bg-blue-50': !notification.is_read}">
+                                <p class="text-sm font-medium text-gray-900" x-text="notification.title"></p>
+                                <p class="text-xs text-gray-500" x-text="notification.message"></p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Task Modal -->
+<div id="createTaskModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Create New Task</h3>
+            </div>
+            <form id="createTaskForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Title</label>
+                    <input type="text" name="title" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea name="description" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Priority</label>
+                    <select name="priority" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeCreateTaskModal()" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-700">
+                        Create Task
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function dashboardData() {
+    return {
+        stats: {
+            myTasks: 0,
+            pendingTasks: 0,
+            unreadMessages: 0,
+            teamMembers: 0
+        },
+        init() {
+            this.loadDashboardData();
+        },
+        async loadDashboardData() {
+            try {
+                const response = await fetch('/api/tasks/');
+                const tasks = await response.json();
+                this.stats.myTasks = tasks.length;
+                this.stats.pendingTasks = tasks.filter(t => t.status === 'pending').length;
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+    }
+}
+
+function openCreateTaskModal() {
+    document.getElementById('createTaskModal').classList.remove('hidden');
+}
+
+function closeCreateTaskModal() {
+    document.getElementById('createTaskModal').classList.add('hidden');
+}
+</script>
+{% endblock %}

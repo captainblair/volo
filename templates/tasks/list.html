@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block title %}Tasks - Volo Africa{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Tasks</h1>
+        <button onclick="openCreateTaskModal()" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+            <i class="fas fa-plus mr-2"></i>Create Task
+        </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white shadow rounded-lg mb-6">
+        <div class="px-6 py-4">
+            <div class="flex flex-wrap gap-4">
+                <select id="statusFilter" class="border-gray-300 rounded-md text-sm">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <select id="priorityFilter" class="border-gray-300 rounded-md text-sm">
+                    <option value="">All Priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+                <input type="text" id="searchFilter" placeholder="Search tasks..." class="border-gray-300 rounded-md text-sm">
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks List -->
+    <div class="bg-white shadow rounded-lg" x-data="tasksData()">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">All Tasks</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned To</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <template x-for="task in filteredTasks">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900" x-text="task.title"></div>
+                                    <div class="text-sm text-gray-500" x-text="task.description.substring(0, 50) + '...'"></div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" x-text="task.assigned_to"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" x-text="task.department"></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                                      :class="{
+                                          'bg-yellow-100 text-yellow-800': task.status === 'pending',
+                                          'bg-blue-100 text-blue-800': task.status === 'in_progress',
+                                          'bg-green-100 text-green-800': task.status === 'completed',
+                                          'bg-red-100 text-red-800': task.status === 'cancelled'
+                                      }" x-text="task.status.replace('_', ' ')"></span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                                      :class="{
+                                          'bg-gray-100 text-gray-800': task.priority === 'low',
+                                          'bg-orange-100 text-orange-800': task.priority === 'medium',
+                                          'bg-red-100 text-red-800': task.priority === 'high',
+                                          'bg-purple-100 text-purple-800': task.priority === 'urgent'
+                                      }" x-text="task.priority"></span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <span x-text="task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No due date'"></span>
+                                <span x-show="task.is_overdue" class="ml-2 text-red-500">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-2">
+                                    <button @click="updateTaskStatus(task.id, 'in_progress')" 
+                                            x-show="task.status === 'pending'"
+                                            class="text-blue-600 hover:text-blue-900">Start</button>
+                                    <button @click="updateTaskStatus(task.id, 'completed')" 
+                                            x-show="task.status === 'in_progress'"
+                                            class="text-green-600 hover:text-green-900">Complete</button>
+                                    <button @click="viewTask(task.id)" class="text-indigo-600 hover:text-indigo-900">View</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+        <div x-show="filteredTasks.length === 0" class="text-center py-8">
+            <i class="fas fa-tasks text-4xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500">No tasks found</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function tasksData() {
+    return {
+        tasks: [],
+        filteredTasks: [],
+        filters: {
+            status: '',
+            priority: '',
+            search: ''
+        },
+        init() {
+            this.loadTasks();
+            this.setupFilters();
+        },
+        async loadTasks() {
+            try {
+                const response = await fetch('/api/tasks/');
+                this.tasks = await response.json();
+                this.applyFilters();
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+            }
+        },
+        setupFilters() {
+            document.getElementById('statusFilter').addEventListener('change', (e) => {
+                this.filters.status = e.target.value;
+                this.applyFilters();
+            });
+            document.getElementById('priorityFilter').addEventListener('change', (e) => {
+                this.filters.priority = e.target.value;
+                this.applyFilters();
+            });
+            document.getElementById('searchFilter').addEventListener('input', (e) => {
+                this.filters.search = e.target.value.toLowerCase();
+                this.applyFilters();
+            });
+        },
+        applyFilters() {
+            this.filteredTasks = this.tasks.filter(task => {
+                const matchesStatus = !this.filters.status || task.status === this.filters.status;
+                const matchesPriority = !this.filters.priority || task.priority === this.filters.priority;
+                const matchesSearch = !this.filters.search || 
+                    task.title.toLowerCase().includes(this.filters.search) ||
+                    task.description.toLowerCase().includes(this.filters.search);
+                return matchesStatus && matchesPriority && matchesSearch;
+            });
+        },
+        async updateTaskStatus(taskId, status) {
+            try {
+                const response = await fetch(`/api/tasks/${taskId}/update-status/`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify({ status })
+                });
+                if (response.ok) {
+                    this.loadTasks();
+                }
+            } catch (error) {
+                console.error('Error updating task status:', error);
+            }
+        },
+        viewTask(taskId) {
+            // Implement task detail view
+            console.log('View task:', taskId);
+        }
+    }
+}
+</script>
+{% endblock %}

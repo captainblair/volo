@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Messages - Volo Africa{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Messages</h1>
+        <button onclick="openComposeModal()" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+            <i class="fas fa-plus mr-2"></i>Compose Message
+        </button>
+    </div>
+
+    <div class="bg-white shadow rounded-lg" x-data="messagesData()">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Inbox</h3>
+        </div>
+        <div class="divide-y divide-gray-200">
+            <template x-for="message in messages">
+                <div class="px-6 py-4 hover:bg-gray-50 cursor-pointer" 
+                     :class="{'bg-blue-50': !message.is_read}"
+                     @click="openMessage(message)">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <img class="h-10 w-10 rounded-full bg-gray-300" 
+                                 :src="`https://ui-avatars.com/api/?name=${message.sender}&background=1e40af&color=fff`" 
+                                 :alt="message.sender">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900" x-text="message.sender"></p>
+                                <p class="text-sm text-gray-500" x-text="message.subject || 'No subject'"></p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500" x-text="new Date(message.created_at).toLocaleDateString()"></p>
+                            <div x-show="!message.is_read" class="w-2 h-2 bg-blue-500 rounded-full ml-auto mt-1"></div>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <p class="text-sm text-gray-600" x-text="message.content.substring(0, 100) + '...'"></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <div x-show="messages.length === 0" class="text-center py-8">
+            <i class="fas fa-envelope text-4xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500">No messages found</p>
+        </div>
+    </div>
+</div>
+
+<!-- Compose Message Modal -->
+<div id="composeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-lg w-full">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Compose Message</h3>
+            </div>
+            <form id="composeForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">To</label>
+                    <select name="recipient_id" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                        <option value="">Select recipient...</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Subject</label>
+                    <input type="text" name="subject" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Message</label>
+                    <textarea name="content" rows="5" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeComposeModal()" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-700">
+                        Send Message
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function messagesData() {
+    return {
+        messages: [],
+        init() {
+            this.loadMessages();
+        },
+        async loadMessages() {
+            // Mock data for now - replace with actual API call
+            this.messages = [
+                {
+                    id: 1,
+                    sender: 'John Doe',
+                    subject: 'Project Update',
+                    content: 'Hi, I wanted to update you on the current project status...',
+                    is_read: false,
+                    created_at: new Date().toISOString()
+                }
+            ];
+        },
+        openMessage(message) {
+            // Implement message detail view
+            console.log('Open message:', message);
+        }
+    }
+}
+
+function openComposeModal() {
+    document.getElementById('composeModal').classList.remove('hidden');
+}
+
+function closeComposeModal() {
+    document.getElementById('composeModal').classList.add('hidden');
+}
+</script>
+{% endblock %}
