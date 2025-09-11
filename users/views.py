@@ -53,6 +53,56 @@ def user_profile_api(request):
     }
     return Response(data)
 
+def signup_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        role = request.POST.get('role', 'employee')
+        department_id = request.POST.get('department_id')
+        
+        # Validation
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'users/signup.html')
+        
+        if CustomUser.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists.')
+            return render(request, 'users/signup.html')
+        
+        if CustomUser.objects.filter(email=email).exists():
+            messages.error(request, 'Email already exists.')
+            return render(request, 'users/signup.html')
+        
+        try:
+            user = CustomUser.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                role=role
+            )
+            
+            if department_id:
+                try:
+                    department = Department.objects.get(id=department_id)
+                    user.department = department
+                    user.save()
+                except Department.DoesNotExist:
+                    pass
+            
+            messages.success(request, 'Account created successfully! Please sign in.')
+            return redirect('login')
+        
+        except Exception as e:
+            messages.error(request, f'Error creating account: {str(e)}')
+    
+    return render(request, 'users/signup.html')
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_api(request):

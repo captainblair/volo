@@ -3,41 +3,102 @@
 {% block title %}Tasks - Volo Africa{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-900">Tasks</h1>
-        <button onclick="openCreateTaskModal()" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-            <i class="fas fa-plus mr-2"></i>Create Task
-        </button>
-    </div>
-
-    <!-- Filters -->
-    <div class="bg-white shadow rounded-lg mb-6">
-        <div class="px-6 py-4">
-            <div class="flex flex-wrap gap-4">
-                <select id="statusFilter" class="border-gray-300 rounded-md text-sm">
-                    <option value="">All Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                </select>
-                <select id="priorityFilter" class="border-gray-300 rounded-md text-sm">
-                    <option value="">All Priority</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                    <option value="urgent">Urgent</option>
-                </select>
-                <input type="text" id="searchFilter" placeholder="Search tasks..." class="border-gray-300 rounded-md text-sm">
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900 mb-1">Task Management</h1>
+                    <p class="text-gray-600">Manage and track all team tasks</p>
+                </div>
+                <button onclick="openCreateTaskModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                    <i class="fas fa-plus mr-2"></i>Create Task
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Tasks List -->
-    <div class="bg-white shadow rounded-lg" x-data="tasksData()">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">All Tasks</h3>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" x-data="taskStats()">
+            <div class="bg-white rounded-lg shadow-sm p-6 border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Total Tasks</p>
+                        <p class="text-2xl font-bold text-gray-900" x-text="stats.total">0</p>
+                    </div>
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-tasks text-blue-600"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-6 border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">In Progress</p>
+                        <p class="text-2xl font-bold text-gray-900" x-text="stats.in_progress">0</p>
+                    </div>
+                    <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-clock text-orange-600"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-6 border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Completed</p>
+                        <p class="text-2xl font-bold text-gray-900" x-text="stats.completed">0</p>
+                    </div>
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check text-green-600"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-6 border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Overdue</p>
+                        <p class="text-2xl font-bold text-gray-900" x-text="stats.overdue">0</p>
+                    </div>
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <!-- Filters -->
+        <div class="bg-white shadow-sm rounded-lg mb-6 border">
+            <div class="px-6 py-4">
+                <div class="flex flex-wrap gap-4">
+                    <select id="statusFilter" class="border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <select id="priorityFilter" class="border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">All Priority</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                    <input type="text" id="searchFilter" placeholder="Search tasks..." class="border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks List -->
+        <div class="bg-white shadow-sm rounded-lg border" x-data="tasksData()">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">All Tasks</h3>
+            </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -102,14 +163,49 @@
                 </tbody>
             </table>
         </div>
-        <div x-show="filteredTasks.length === 0" class="text-center py-8">
-            <i class="fas fa-tasks text-4xl text-gray-300 mb-4"></i>
-            <p class="text-gray-500">No tasks found</p>
+            <div x-show="filteredTasks.length === 0" class="text-center py-12">
+                <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-tasks text-2xl text-gray-400"></i>
+                </div>
+                <h4 class="text-lg font-medium text-gray-900 mb-2">No tasks found</h4>
+                <p class="text-gray-500 mb-6">Create your first task to get started</p>
+                <button onclick="openCreateTaskModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700">
+                    <i class="fas fa-plus mr-2"></i>Create Task
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+function taskStats() {
+    return {
+        stats: {
+            total: 0,
+            in_progress: 0,
+            completed: 0,
+            overdue: 0
+        },
+        init() {
+            this.loadStats();
+        },
+        async loadStats() {
+            try {
+                const response = await fetch('/dashboard/api/stats/');
+                const data = await response.json();
+                this.stats = {
+                    total: data.total_tasks || 0,
+                    in_progress: data.in_progress_tasks || 0,
+                    completed: data.completed_tasks || 0,
+                    overdue: data.overdue_tasks || 0
+                };
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+    }
+}
+
 function tasksData() {
     return {
         tasks: [],
@@ -130,6 +226,9 @@ function tasksData() {
                 this.applyFilters();
             } catch (error) {
                 console.error('Error loading tasks:', error);
+                // Show sample data if API fails
+                this.tasks = [];
+                this.filteredTasks = [];
             }
         },
         setupFilters() {

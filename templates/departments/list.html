@@ -3,62 +3,242 @@
 {% block title %}Departments - Volo Africa{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-900">Departments</h1>
-        {% if user.role == 'admin' %}
-        <button onclick="openCreateDepartmentModal()" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-            <i class="fas fa-plus mr-2"></i>Create Department
-        </button>
-        {% endif %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header Section -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Department Management</h1>
+                    <p class="text-gray-600 mt-1">Manage departments, track performance, and coordinate team activities</p>
+                </div>
+                {% if user.role == 'admin' %}
+                <button onclick="openCreateDepartmentModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center">
+                    <i class="fas fa-plus mr-2"></i>Add Department
+                </button>
+                {% endif %}
+            </div>
+        </div>
     </div>
 
-    <!-- Departments Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" x-data="departmentsData()">
-        <template x-for="department in departments">
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                                <i class="fas fa-building text-white text-xl"></i>
-                            </div>
-                        </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">Department</dt>
-                                <dd class="text-lg font-medium text-gray-900" x-text="department.name"></dd>
-                            </dl>
-                        </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Department Overview Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" x-data="departmentStats()">
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-building text-blue-600"></i>
                     </div>
-                    <div class="mt-5">
-                        <div class="text-sm text-gray-500" x-text="department.description || 'No description available'"></div>
-                        <div class="mt-3 flex justify-between text-sm">
-                            <span class="text-gray-500">Manager:</span>
-                            <span class="font-medium" x-text="department.manager || 'Not assigned'"></span>
-                        </div>
-                        <div class="mt-2 flex justify-between text-sm">
-                            <span class="text-gray-500">Employees:</span>
-                            <span class="font-medium" x-text="department.employee_count"></span>
-                        </div>
-                        <div class="mt-2 flex justify-between text-sm">
-                            <span class="text-gray-500">Active Tasks:</span>
-                            <span class="font-medium" x-text="department.active_tasks_count"></span>
-                        </div>
-                    </div>
-                    <div class="mt-5">
-                        <a href="#" class="text-primary hover:text-blue-700 text-sm font-medium">
-                            View Details <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Departments</p>
+                        <p class="text-2xl font-bold text-gray-900" x-text="stats.total_departments">0</p>
                     </div>
                 </div>
             </div>
-        </template>
-    </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-users text-green-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Employees</p>
+                        <p class="text-2xl font-bold text-gray-900" x-text="stats.total_employees">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-tasks text-orange-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Active Tasks</p>
+                        <p class="text-2xl font-bold text-gray-900" x-text="stats.active_tasks">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-comments text-purple-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Messages Today</p>
+                        <p class="text-2xl font-bold text-gray-900" x-text="stats.messages_today">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div x-show="departments.length === 0" class="text-center py-12">
-        <i class="fas fa-building text-4xl text-gray-300 mb-4"></i>
-        <p class="text-gray-500">No departments found</p>
+        <!-- Department Grid View -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8" x-data="departmentData()">
+            <template x-for="department in departments">
+                <div class="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-building text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="flex space-x-1">
+                                <button class="p-1 text-gray-400 hover:text-blue-600 rounded">
+                                    <i class="fas fa-eye text-sm"></i>
+                                </button>
+                                {% if user.role == 'admin' %}
+                                <button class="p-1 text-gray-400 hover:text-green-600 rounded">
+                                    <i class="fas fa-edit text-sm"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2" x-text="department.name"></h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2" x-text="department.description || 'No description available'"></p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Manager</span>
+                                <span class="text-sm font-medium text-gray-900" x-text="department.manager || 'Not assigned'"></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Employees</span>
+                                <span class="text-sm font-medium text-gray-900" x-text="department.employee_count + ' members'"></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Active Tasks</span>
+                                <span class="text-sm font-medium text-blue-600" x-text="department.active_tasks_count + ' tasks'"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs text-gray-500 uppercase tracking-wide">Performance</span>
+                                <span class="text-xs font-medium text-gray-900" x-text="`${department.efficiency || 85}%`"></span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" :style="`width: ${department.efficiency || 85}%`"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 flex space-x-2">
+                            <button class="flex-1 bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-100">
+                                <i class="fas fa-users mr-1"></i>View Team
+                            </button>
+                            <button class="flex-1 bg-gray-50 text-gray-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100">
+                                <i class="fas fa-tasks mr-1"></i>Tasks
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            
+            <div x-show="departments.length === 0" class="col-span-full">
+                <div class="bg-white rounded-lg shadow-sm border p-12 text-center">
+                    <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-building text-2xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No departments found</h3>
+                    <p class="text-gray-500 mb-6">Get started by creating your first department.</p>
+                    {% if user.role == 'admin' %}
+                    <button onclick="openCreateDepartmentModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                        <i class="fas fa-plus mr-2"></i>Create Department
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Department Analytics Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Communication Flow Chart -->
+            <div class="bg-white rounded-lg shadow-sm border">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Inter-Department Communication</h3>
+                    <p class="text-sm text-gray-600">Message flow between departments this week</p>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-building text-blue-600 text-sm"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">Marketing ↔ IT</span>
+                            </div>
+                            <span class="text-sm text-gray-600">24 messages</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-building text-green-600 text-sm"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">HR ↔ Marketing</span>
+                            </div>
+                            <span class="text-sm text-gray-600">18 messages</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-building text-purple-600 text-sm"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">IT ↔ HR</span>
+                            </div>
+                            <span class="text-sm text-gray-600">12 messages</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Task Distribution Chart -->
+            <div class="bg-white rounded-lg shadow-sm border">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Task Distribution</h3>
+                    <p class="text-sm text-gray-600">Workload across departments</p>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                                <span class="text-sm font-medium text-gray-900">Marketing</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-24 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 65%"></div>
+                                </div>
+                                <span class="text-sm text-gray-600">13 tasks</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-4 h-4 bg-green-500 rounded"></div>
+                                <span class="text-sm font-medium text-gray-900">IT</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-24 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-500 h-2 rounded-full" style="width: 80%"></div>
+                                </div>
+                                <span class="text-sm text-gray-600">16 tasks</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-4 h-4 bg-purple-500 rounded"></div>
+                                <span class="text-sm font-medium text-gray-900">HR</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-24 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-purple-500 h-2 rounded-full" style="width: 45%"></div>
+                                </div>
+                                <span class="text-sm text-gray-600">9 tasks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -94,6 +274,37 @@
 {% endif %}
 
 <script>
+function departmentStats() {
+    return {
+        stats: {
+            total_departments: 0,
+            total_employees: 0,
+            active_drivers: 0,
+            active_routes: 0
+        },
+        init() {
+            this.loadStats();
+        },
+        async loadStats() {
+            try {
+                const response = await fetch('/api/departments/stats/');
+                if (response.ok) {
+                    this.stats = await response.json();
+                }
+            } catch (error) {
+                console.error('Error loading department stats:', error);
+                // Set default values if API fails
+                this.stats = {
+                    total_departments: 5,
+                    total_employees: 42,
+                    active_drivers: 28,
+                    active_routes: 12
+                };
+            }
+        }
+    }
+}
+
 function departmentsData() {
     return {
         departments: [],

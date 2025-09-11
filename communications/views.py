@@ -20,6 +20,72 @@ def chat_view(request):
 
 @api_view(['GET'])
 @login_required
+def chat_rooms_api(request):
+    chat_rooms = ChatRoom.objects.filter(members=request.user, is_active=True)
+    data = []
+    for room in chat_rooms:
+        data.append({
+            'id': room.id,
+            'name': room.name,
+            'description': room.description,
+            'department': room.department.name if room.department else '',
+            'member_count': room.members.count(),
+            'last_message': None  # TODO: Add last message logic
+        })
+    return Response(data)
+
+@api_view(['GET'])
+@login_required
+def chat_messages_api(request, room_id):
+    try:
+        room = ChatRoom.objects.get(id=room_id, members=request.user)
+        messages = ChatMessage.objects.filter(room=room).order_by('created_at')[:50]
+        
+        data = []
+        for message in messages:
+            data.append({
+                'id': message.id,
+                'user': message.user.get_full_name() or message.user.username,
+                'message': message.message,
+                'timestamp': message.created_at.isoformat(),
+                'is_own': message.user == request.user
+            })
+        
+        return Response(data)
+    except ChatRoom.DoesNotExist:
+        return Response({'error': 'Chat room not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+@login_required
+def send_chat_message_api(request, room_id):
+    try:
+        room = ChatRoom.objects.get(id=room_id, members=request.user)
+        message_content = request.data.get('message', '').strip()
+        
+        if not message_content:
+            return Response({'error': 'Message cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        message = ChatMessage.objects.create(
+            room=room,
+            user=request.user,
+            message=message_content
+        )
+        
+        return Response({
+            'id': message.id,
+            'user': message.user.get_full_name() or message.user.username,
+            'message': message.message,
+            'timestamp': message.created_at.isoformat(),
+            'is_own': True
+        }, status=status.HTTP_201_CREATED)
+        
+    except ChatRoom.DoesNotExist:
+        return Response({'error': 'Chat room not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@login_required
 def notifications_api(request):
     notifications = Notification.objects.filter(user=request.user)[:20]
     data = []

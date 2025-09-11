@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Volo Africa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#64748b',
+                        accent: '#f59e0b',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'float': 'float 6s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .gradient-bg {
+            background: #f9fafb;
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="font-sans gradient-bg min-h-screen flex items-center justify-center p-4">
+    <!-- Animated Background Elements -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full animate-float"></div>
+        <div class="absolute top-40 right-20 w-16 h-16 bg-white/10 rounded-full animate-float" style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white/10 rounded-full animate-float" style="animation-delay: 4s;"></div>
+        <div class="absolute bottom-40 right-1/3 w-24 h-24 bg-white/10 rounded-full animate-float" style="animation-delay: 1s;"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="w-full max-w-md">
+            <!-- Card -->
+            <div class="bg-white rounded-lg shadow-lg border p-8">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-lg mb-4">
+                        <i class="fas fa-user-plus text-white text-xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-900 mb-2">Create Account</h1>
+                    <p class="text-gray-600">Join the VOLO platform</p>
+                </div>
+
+                <!-- Signup Form -->
+                <form method="post" class="space-y-6" x-data="signupForm()" @submit="handleSubmit">
+                    {% csrf_token %}
+                    
+                    <!-- Name Fields -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-user mr-2 text-gray-400"></i>First Name
+                            </label>
+                            <input id="first_name" name="first_name" type="text" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                                   placeholder="John"
+                                   x-model="form.first_name">
+                        </div>
+                        <div>
+                            <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-user mr-2 text-gray-400"></i>Last Name
+                            </label>
+                            <input id="last_name" name="last_name" type="text" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                                   placeholder="Doe"
+                                   x-model="form.last_name">
+                        </div>
+                    </div>
+
+                    <!-- Username Field -->
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-at mr-2 text-gray-400"></i>Username
+                        </label>
+                        <input id="username" name="username" type="text" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                               placeholder="johndoe"
+                               x-model="form.username"
+                               @input="checkUsername">
+                        <div x-show="usernameStatus" class="mt-2 text-sm" :class="usernameAvailable ? 'text-green-600' : 'text-red-600'">
+                            <i :class="usernameAvailable ? 'fas fa-check' : 'fas fa-times'" class="mr-1"></i>
+                            <span x-text="usernameMessage"></span>
+                        </div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-envelope mr-2 text-gray-400"></i>Email Address
+                        </label>
+                        <input id="email" name="email" type="email" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                               placeholder="john@example.com"
+                               x-model="form.email">
+                    </div>
+
+                    <!-- Role Field -->
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-briefcase mr-2 text-gray-400"></i>Role
+                        </label>
+                        <select id="role" name="role" required 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                                x-model="form.role">
+                            <option value="">Select your role</option>
+                            <option value="employee">Employee</option>
+                            <option value="manager">Department Manager</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                    </div>
+
+                    <!-- Department Field -->
+                    <div x-show="form.role && form.role !== 'admin'">
+                        <label for="department" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-building mr-2 text-gray-400"></i>Department
+                        </label>
+                        <select id="department" name="department_id" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                                x-model="form.department_id">
+                            <option value="">Select department</option>
+                            <option value="1">Human Resources</option>
+                            <option value="2">Information Technology</option>
+                            <option value="3">Finance</option>
+                            <option value="4">Marketing</option>
+                            <option value="5">Operations</option>
+                            <option value="6">Sales</option>
+                        </select>
+                    </div>
+
+                    <!-- Password Fields -->
+                    <div class="grid grid-cols-1 gap-4">
+                        <div x-data="{ showPassword: false }">
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-lock mr-2 text-gray-400"></i>Password
+                            </label>
+                            <div class="relative">
+                                <input id="password" name="password" :type="showPassword ? 'text' : 'password'" required 
+                                       class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                                       placeholder="Enter your password"
+                                       x-model="form.password"
+                                       @input="checkPasswordStrength">
+                                <button type="button" @click="showPassword = !showPassword" 
+                                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                                </button>
+                            </div>
+                            <!-- Password Strength Indicator -->
+                            <div x-show="form.password" class="mt-2">
+                                <div class="flex space-x-1">
+                                    <div class="h-2 flex-1 rounded" :class="passwordStrength >= 1 ? 'bg-red-400' : 'bg-gray-200'"></div>
+                                    <div class="h-2 flex-1 rounded" :class="passwordStrength >= 2 ? 'bg-yellow-400' : 'bg-gray-200'"></div>
+                                    <div class="h-2 flex-1 rounded" :class="passwordStrength >= 3 ? 'bg-green-400' : 'bg-gray-200'"></div>
+                                </div>
+                                <p class="text-sm mt-1" :class="passwordStrength >= 3 ? 'text-green-600' : passwordStrength >= 2 ? 'text-yellow-600' : 'text-red-600'">
+                                    <span x-text="passwordStrengthText"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div x-data="{ showPassword: false }">
+                            <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-lock mr-2 text-gray-400"></i>Confirm Password
+                            </label>
+                            <div class="relative">
+                                <input id="confirm_password" name="confirm_password" :type="showPassword ? 'text' : 'password'" required 
+                                       class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                                       placeholder="Confirm your password"
+                                       x-model="form.confirm_password"
+                                       @input="checkPasswordMatch">
+                                <button type="button" @click="showPassword = !showPassword" 
+                                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                                </button>
+                            </div>
+                            <div x-show="form.confirm_password && !passwordsMatch" class="mt-2 text-sm text-red-600">
+                                <i class="fas fa-times mr-1"></i>
+                                Passwords do not match
+                            </div>
+                            <div x-show="form.confirm_password && passwordsMatch" class="mt-2 text-sm text-green-600">
+                                <i class="fas fa-check mr-1"></i>
+                                Passwords match
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="flex items-start">
+                        <input type="checkbox" required class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500" x-model="form.terms">
+                        <label class="ml-2 text-sm text-gray-600">
+                            I agree to the <a href="#" class="text-blue-600 hover:text-blue-500">Terms of Service</a> and 
+                            <a href="#" class="text-blue-600 hover:text-blue-500">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <!-- Error Messages -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center animate-fade-in">
+                                <i class="fas fa-exclamation-circle mr-2"></i>
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Submit Button -->
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                            :disabled="loading || !isFormValid"
+                            :class="(loading || !isFormValid) ? 'cursor-not-allowed' : ''">
+                        <span x-show="!loading" class="flex items-center justify-center">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Create Account
+                        </span>
+                        <span x-show="loading" class="flex items-center justify-center">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                            Creating Account...
+                        </span>
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="relative my-6">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">Already have an account?</span>
+                        </div>
+                    </div>
+
+                    <!-- Sign In Link -->
+                    <div class="text-center">
+                        <a href="{% url 'login' %}" class="inline-flex items-center justify-center w-full py-3 px-6 border-2 border-blue-600 text-blue-600 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-200 transform hover:scale-[1.02]">
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            Sign In Instead
+                        </a>
+                    </div>
+                </form>
+            </div>
+                <!-- Name Fields -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-user mr-2 text-gray-400"></i>First Name
+                        </label>
+                        <input id="first_name" name="first_name" type="text" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                               placeholder="John"
+                               x-model="form.first_name">
+                    </div>
+                    <div>
+                        <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-user mr-2 text-gray-400"></i>Last Name
+                        </label>
+                        <input id="last_name" name="last_name" type="text" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                               placeholder="Doe"
+                               x-model="form.last_name">
+                    </div>
+                </div>
+
+                <!-- Username Field -->
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-at mr-2 text-gray-400"></i>Username
+                    </label>
+                    <input id="username" name="username" type="text" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                           placeholder="johndoe"
+                           x-model="form.username"
+                           @input="checkUsername">
+                    <div x-show="usernameStatus" class="mt-2 text-sm" :class="usernameAvailable ? 'text-green-600' : 'text-red-600'">
+                        <i :class="usernameAvailable ? 'fas fa-check' : 'fas fa-times'" class="mr-1"></i>
+                        <span x-text="usernameMessage"></span>
+                    </div>
+                </div>
+
+                <!-- Email Field -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-envelope mr-2 text-gray-400"></i>Email Address
+                    </label>
+                    <input id="email" name="email" type="email" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                           placeholder="john@example.com"
+                           x-model="form.email">
+                </div>
+
+                <!-- Role Field -->
+                <div>
+                    <label for="role" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-briefcase mr-2 text-gray-400"></i>Role
+                    </label>
+                    <select id="role" name="role" required 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                            x-model="form.role">
+                        <option value="">Select your role</option>
+                        <option value="employee">Employee</option>
+                        <option value="manager">Department Manager</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+
+                <!-- Department Field -->
+                <div x-show="form.role && form.role !== 'admin'">
+                    <label for="department" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-building mr-2 text-gray-400"></i>Department
+                    </label>
+                    <select id="department" name="department_id" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                            x-model="form.department_id">
+                        <option value="">Select department</option>
+                        <option value="1">Human Resources</option>
+                        <option value="2">Information Technology</option>
+                        <option value="3">Finance</option>
+                        <option value="4">Marketing</option>
+                        <option value="5">Operations</option>
+                        <option value="6">Sales</option>
+                    </select>
+                </div>
+
+                <!-- Password Fields -->
+                <div class="grid grid-cols-1 gap-4">
+                    <div x-data="{ showPassword: false }">
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2 text-gray-400"></i>Password
+                        </label>
+                        <div class="relative">
+                            <input id="password" name="password" :type="showPassword ? 'text' : 'password'" required 
+                                   class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                                   placeholder="Enter your password"
+                                   x-model="form.password"
+                                   @input="checkPasswordStrength">
+                            <button type="button" @click="showPassword = !showPassword" 
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                            </button>
+                        </div>
+                        <!-- Password Strength Indicator -->
+                        <div x-show="form.password" class="mt-2">
+                            <div class="flex space-x-1">
+                                <div class="h-2 flex-1 rounded" :class="passwordStrength >= 1 ? 'bg-red-400' : 'bg-gray-200'"></div>
+                                <div class="h-2 flex-1 rounded" :class="passwordStrength >= 2 ? 'bg-yellow-400' : 'bg-gray-200'"></div>
+                                <div class="h-2 flex-1 rounded" :class="passwordStrength >= 3 ? 'bg-green-400' : 'bg-gray-200'"></div>
+                            </div>
+                            <p class="text-sm mt-1" :class="passwordStrength >= 3 ? 'text-green-600' : passwordStrength >= 2 ? 'text-yellow-600' : 'text-red-600'">
+                                <span x-text="passwordStrengthText"></span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div x-data="{ showPassword: false }">
+                        <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2 text-gray-400"></i>Confirm Password
+                        </label>
+                        <div class="relative">
+                            <input id="confirm_password" name="confirm_password" :type="showPassword ? 'text' : 'password'" required 
+                                   class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                                   placeholder="Confirm your password"
+                                   x-model="form.confirm_password"
+                                   @input="checkPasswordMatch">
+                            <button type="button" @click="showPassword = !showPassword" 
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                            </button>
+                        </div>
+                        <div x-show="form.confirm_password && !passwordsMatch" class="mt-2 text-sm text-red-600">
+                            <i class="fas fa-times mr-1"></i>
+                            Passwords do not match
+                        </div>
+                        <div x-show="form.confirm_password && passwordsMatch" class="mt-2 text-sm text-green-600">
+                            <i class="fas fa-check mr-1"></i>
+                            Passwords match
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="flex items-start">
+                    <input type="checkbox" required class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500" x-model="form.terms">
+                    <label class="ml-2 text-sm text-gray-600">
+                        I agree to the <a href="#" class="text-blue-600 hover:text-blue-500">Terms of Service</a> and 
+                        <a href="#" class="text-blue-600 hover:text-blue-500">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <!-- Error Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center animate-fade-in">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Submit Button -->
+                <button type="submit" 
+                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                        :disabled="loading || !isFormValid"
+                        :class="(loading || !isFormValid) ? 'cursor-not-allowed' : ''">
+                    <span x-show="!loading" class="flex items-center justify-center">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        Create Account
+                    </span>
+                    <span x-show="loading" class="flex items-center justify-center">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                        Creating Account...
+                    </span>
+                </button>
+
+                <!-- Divider -->
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">Already have an account?</span>
+                    </div>
+                </div>
+
+                <!-- Sign In Link -->
+                <div class="text-center">
+                    <a href="{% url 'login' %}" class="inline-flex items-center justify-center w-full py-3 px-6 border-2 border-blue-600 text-blue-600 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-200 transform hover:scale-[1.02]">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Sign In Instead
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 text-white/80 text-sm">
+            <p>© 2024 Volo Africa. Empowering African Organizations.</p>
+        </div>
+    </div>
+
+    <script>
+        function signupForm() {
+            return {
+                loading: false,
+                form: {
+                    first_name: '',
+                    last_name: '',
+                    username: '',
+                    email: '',
+                    role: '',
+                    department_id: '',
+                    password: '',
+                    confirm_password: '',
+                    terms: false
+                },
+                usernameStatus: false,
+                usernameAvailable: false,
+                usernameMessage: '',
+                passwordStrength: 0,
+                passwordStrengthText: '',
+                passwordsMatch: false,
+
+                get isFormValid() {
+                    return this.form.first_name && 
+                           this.form.last_name && 
+                           this.form.username && 
+                           this.form.email && 
+                           this.form.role && 
+                           this.form.password && 
+                           this.form.confirm_password && 
+                           this.passwordsMatch && 
+                           this.passwordStrength >= 2 && 
+                           this.form.terms;
+                },
+
+                checkUsername() {
+                    if (this.form.username.length >= 3) {
+                        this.usernameStatus = true;
+                        // Simulate username check
+                        setTimeout(() => {
+                            this.usernameAvailable = true;
+                            this.usernameMessage = 'Username is available';
+                        }, 500);
+                    } else {
+                        this.usernameStatus = false;
+                    }
+                },
+
+                checkPasswordStrength() {
+                    const password = this.form.password;
+                    let strength = 0;
+                    
+                    if (password.length >= 8) strength++;
+                    if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength++;
+                    if (/\d/.test(password) && /[!@#$%^&*]/.test(password)) strength++;
+                    
+                    this.passwordStrength = strength;
+                    
+                    const messages = [
+                        'Weak password',
+                        'Fair password', 
+                        'Good password',
+                        'Strong password'
+                    ];
+                    
+                    this.passwordStrengthText = messages[strength] || 'Very weak password';
+                    this.checkPasswordMatch();
+                },
+
+                checkPasswordMatch() {
+                    this.passwordsMatch = this.form.password === this.form.confirm_password && this.form.confirm_password.length > 0;
+                },
+
+                handleSubmit(event) {
+                    if (!this.isFormValid) {
+                        event.preventDefault();
+                        return;
+                    }
+                    this.loading = true;
+                }
+            }
+        }
+
+        // Add interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('transform', 'scale-[1.02]');
+                });
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('transform', 'scale-[1.02]');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
