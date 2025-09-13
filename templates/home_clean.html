@@ -6,11 +6,6 @@
     <title>Volo Africa - Enterprise Communication Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <style>
-        .slideshow-container {
-            overflow: hidden;
-        }
-    </style>
 </head>
 <body class="bg-gray-50" x-data="{ mobileMenuOpen: false }">
     <!-- Navigation -->
@@ -72,46 +67,40 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center overflow-hidden" x-data="heroSlideshow()">
-        <!-- Slideshow Container -->
-        <div class="absolute inset-0 flex transition-transform duration-1000 ease-in-out" :style="`transform: translateX(-${currentIndex * 100}%)`">
-            <div class="min-w-full h-full bg-cover bg-center bg-no-repeat" style="background-image: url('/media/2025-06-04.webp');"></div>
-            <div class="min-w-full h-full bg-cover bg-center bg-no-repeat" style="background-image: url('/media/photo-1542945179-d074481ddaf5.avif');"></div>
-            <div class="min-w-full h-full bg-cover bg-center bg-no-repeat" style="background-image: url('/media/photo-1719020364832-2614e52816a9.avif');"></div>
-        </div>
-        <div class="absolute inset-0 bg-black/40"></div>
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div class="text-center">
-                <h1 class="text-5xl md:text-7xl font-black mb-6 text-orange-500">
-                    Streamline Your
-                    <span class="block text-yellow-400">Department</span>
+    <section class="bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 min-h-screen flex items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="text-center text-white">
+                <h1 class="text-5xl md:text-7xl font-black mb-6">
+                    Transform Your
+                    <span class="block text-yellow-300">Enterprise</span>
                     Communication
                 </h1>
-                <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto text-gray-100">
-                    Streamline workflows and improve collaboration across your organization with our comprehensive communication platform.
+                <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto opacity-90">
+                    Volo Africa delivers cutting-edge communication solutions that connect teams, 
+                    streamline workflows, and accelerate business growth across the continent.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
                     <a href="/auth/signup/" class="bg-white text-orange-500 hover:bg-gray-100 px-10 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-xl">
-                        Join Your Team
+                        Start Free Trial
                     </a>
                     <a href="#features" class="border-2 border-white text-white hover:bg-white hover:text-orange-500 px-10 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105">
-                        See Features
+                        Learn More
                     </a>
                 </div>
                 
                 <!-- Stats -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                        <div class="text-3xl font-bold mb-2">85%</div>
-                        <div class="text-lg opacity-80">Reduced Task Confusion</div>
+                        <div class="text-3xl font-bold mb-2">500+</div>
+                        <div class="text-lg opacity-80">Enterprise Clients</div>
                     </div>
                     <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                        <div class="text-3xl font-bold mb-2">60%</div>
-                        <div class="text-lg opacity-80">Faster Project Completion</div>
+                        <div class="text-3xl font-bold mb-2">99.9%</div>
+                        <div class="text-lg opacity-80">Uptime Guarantee</div>
                     </div>
                     <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                        <div class="text-3xl font-bold mb-2">100%</div>
-                        <div class="text-lg opacity-80">Department Visibility</div>
+                        <div class="text-3xl font-bold mb-2">24/7</div>
+                        <div class="text-lg opacity-80">Expert Support</div>
                     </div>
                 </div>
             </div>
@@ -123,10 +112,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                    Key <span class="text-orange-500">Solutions</span>
+                    Powerful <span class="text-orange-500">Features</span>
                 </h2>
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                    Solve department communication issues and improve organizational efficiency
+                    Everything you need to transform your enterprise communication
                 </p>
             </div>
             
@@ -137,8 +126,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Clear Task Allocation</h3>
-                    <p class="text-gray-600">Assign tasks within proper department scope to prevent overwhelming technical teams with non-IT work.</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Smart Communication</h3>
+                    <p class="text-gray-600">AI-powered messaging that understands context and improves team collaboration.</p>
                 </div>
                 
                 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 text-center hover:shadow-lg transition-shadow">
@@ -147,8 +136,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Department Coordination</h3>
-                    <p class="text-gray-600">Bridge communication gaps between Marketing, IT, and other departments for seamless collaboration.</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Task Management</h3>
+                    <p class="text-gray-600">Intelligent task allocation and tracking across departments and teams.</p>
                 </div>
                 
                 <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-8 text-center hover:shadow-lg transition-shadow">
@@ -157,8 +146,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Workload Balance</h3>
-                    <p class="text-gray-600">Monitor and distribute tasks evenly to prevent department overload and improve productivity.</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Real-Time Analytics</h3>
+                    <p class="text-gray-600">Comprehensive dashboards with live metrics and performance insights.</p>
                 </div>
             </div>
         </div>
@@ -193,28 +182,5 @@
             </div>
         </div>
     </footer>
-
-    <script>
-        function heroSlideshow() {
-            return {
-                currentIndex: 0,
-                totalSlides: 3,
-                
-                init() {
-                    this.startSlideshow();
-                },
-                
-                startSlideshow() {
-                    setInterval(() => {
-                        this.nextSlide();
-                    }, 5000); // Change slide every 5 seconds
-                },
-                
-                nextSlide() {
-                    this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
-                }
-            }
-        }
-    </script>
 </body>
 </html>

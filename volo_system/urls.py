@@ -14,7 +14,7 @@ urlpatterns = [
     path('api/departments/', include('departments.urls')),
     path('api/tasks/', include('tasks.urls')),
     path('api/communications/', include('communications.urls')),
-    path('', include('users.urls')),
+    path('auth/', include('users.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('tasks/', include('tasks.urls')),
     path('communications/', include('communications.urls')),
