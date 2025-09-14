@@ -34,67 +34,64 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         @keyframes slideUp {
             from { transform: translateY(30px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, #f97316 0%, #dc2626 50%, #ec4899 100%);
-        }
         .glass-effect {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 8px 0 rgba(31,41,55,0.04);
+            border-radius: 8px;
         }
     </style>
 </head>
-<body class="font-sans gradient-bg min-h-screen flex items-center justify-center p-4">
-    <!-- Animated Background Elements -->
-    <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full animate-float"></div>
-        <div class="absolute top-40 right-20 w-16 h-16 bg-white/10 rounded-full animate-float" style="animation-delay: 2s;"></div>
-        <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white/10 rounded-full animate-float" style="animation-delay: 4s;"></div>
-        <div class="absolute bottom-40 right-1/3 w-24 h-24 bg-white/10 rounded-full animate-float" style="animation-delay: 1s;"></div>
-    </div>
 
-    <div class="relative z-10 w-full max-w-md">
-        <!-- Back to Home Link -->
-        <div class="mb-8 text-center">
-            <a href="{% url 'home' %}" class="inline-flex items-center text-white/80 hover:text-white transition-colors duration-200">
-                <i class="fas fa-arrow-left mr-2"></i>
-                Back to Home
-            </a>
-        </div>
+<body class="font-sans bg-gradient-to-br from-blue-100 via-sky-200 to-indigo-100 min-h-screen flex items-center justify-center p-4">
 
-        <!-- Signup Card -->
-        <div class="glass-effect rounded-3xl shadow-2xl p-8 animate-slide-up">
-            <!-- Logo and Header -->
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                </div>
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Join Volo Africa</h1>
-                <p class="text-gray-600">Create your account to get started</p>
+    <div class="w-full min-h-screen flex bg-white">
+        <!-- Left: ALX Admissions Portal Content -->
+        <div class="hidden md:flex flex-col justify-center items-center w-1/2 bg-gray-50 border-r border-gray-200 p-12">
+            <!-- Logo Placeholder -->
+            <div class="mb-6">
+                <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-bold text-gray-500">ALX</div>
             </div>
-
-                <!-- Signup Form -->
-                <form method="post" class="space-y-6" x-data="signupForm()" @submit="handleSubmit">
-                    {% csrf_token %}
-                    
-                    <!-- Name Fields -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">ALX Admissions Portal</h1>
+            <h2 class="text-lg text-gray-700 mb-4">Welcome back!</h2>
+            <p class="text-gray-600 max-w-md text-center mb-6">
+                This is the ALX Admissions Portal, your first step towards gaining some of today's most sought-after skills and joining our incredible talent community.<br><br>
+                If you already have an account, log in entering your email and password or via Google and GitHub.<br><br>
+                If this is your first time on the admissions portal, please scroll down and click the "Sign up" button to set up your account.
+            </p>
+        </div>
+        <!-- Right: Signup Form -->
+        <div class="flex flex-col justify-center items-center w-full md:w-1/2 p-8">
+            <div class="w-full max-w-md">
+                <div class="mb-8 text-center">
+                    <a href="{% url 'home' %}" class="inline-flex items-center text-gray-500 hover:text-gray-700 transition-colors duration-200">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Back to Home
+                    </a>
+                </div>
+                <div class="bg-white rounded-xl shadow p-8 animate-slide-up border border-gray-100">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Sign Up</h1>
+                        <p class="text-gray-600">Create your account to get started</p>
+                    </div>
+                    <form method="post" class="space-y-5" x-data="signupForm()" @submit="handleSubmit">
+                        {% csrf_token %}
+                        <!-- Name Fields -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
                             <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-user mr-2 text-gray-400"></i>First Name
                             </label>
                             <input id="first_name" name="first_name" type="text" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white" 
                                    placeholder="John"
                                    x-model="form.first_name">
                         </div>
@@ -103,7 +100,7 @@
                                 <i class="fas fa-user mr-2 text-gray-400"></i>Last Name
                             </label>
                             <input id="last_name" name="last_name" type="text" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white" 
                                    placeholder="Doe"
                                    x-model="form.last_name">
                         </div>
@@ -115,7 +112,7 @@
                             <i class="fas fa-at mr-2 text-gray-400"></i>Username
                         </label>
                         <input id="username" name="username" type="text" required 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white" 
                                placeholder="johndoe"
                                x-model="form.username"
                                @input="checkUsername">
@@ -177,7 +174,7 @@
                             </label>
                             <div class="relative">
                                 <input id="password" name="password" :type="showPassword ? 'text' : 'password'" required 
-                                       class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                                       class="w-full px-3 py-2 pr-12 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white" 
                                        placeholder="Enter your password"
                                        x-model="form.password"
                                        @input="checkPasswordStrength">
@@ -205,7 +202,7 @@
                             </label>
                             <div class="relative">
                                 <input id="confirm_password" name="confirm_password" :type="showPassword ? 'text' : 'password'" required 
-                                       class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                                       class="w-full px-3 py-2 pr-12 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white" 
                                        placeholder="Confirm your password"
                                        x-model="form.confirm_password"
                                        @input="checkPasswordMatch">
@@ -277,197 +274,6 @@
                         </a>
                     </div>
                 </form>
-            </div>
-                <!-- Name Fields -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-user mr-2 text-gray-400"></i>First Name
-                        </label>
-                        <input id="first_name" name="first_name" type="text" required 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
-                               placeholder="John"
-                               x-model="form.first_name">
-                    </div>
-                    <div>
-                        <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-user mr-2 text-gray-400"></i>Last Name
-                        </label>
-                        <input id="last_name" name="last_name" type="text" required 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
-                               placeholder="Doe"
-                               x-model="form.last_name">
-                    </div>
-                </div>
-
-                <!-- Username Field -->
-                <div>
-                    <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-at mr-2 text-gray-400"></i>Username
-                    </label>
-                    <input id="username" name="username" type="text" required 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
-                           placeholder="johndoe"
-                           x-model="form.username"
-                           @input="checkUsername">
-                    <div x-show="usernameStatus" class="mt-2 text-sm" :class="usernameAvailable ? 'text-green-600' : 'text-red-600'">
-                        <i :class="usernameAvailable ? 'fas fa-check' : 'fas fa-times'" class="mr-1"></i>
-                        <span x-text="usernameMessage"></span>
-                    </div>
-                </div>
-
-                <!-- Email Field -->
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-envelope mr-2 text-gray-400"></i>Email Address
-                    </label>
-                    <input id="email" name="email" type="email" required 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
-                           placeholder="john@example.com"
-                           x-model="form.email">
-                </div>
-
-                <!-- Role Field -->
-                <div>
-                    <label for="role" class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-briefcase mr-2 text-gray-400"></i>Role
-                    </label>
-                    <select id="role" name="role" required 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
-                            x-model="form.role">
-                        <option value="">Select your role</option>
-                        <option value="employee">Employee</option>
-                        <option value="manager">Department Manager</option>
-                        <option value="admin">Administrator</option>
-                    </select>
-                </div>
-
-                <!-- Department Field -->
-                <div x-show="form.role && form.role !== 'admin'">
-                    <label for="department" class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-building mr-2 text-gray-400"></i>Department
-                    </label>
-                    <select id="department" name="department_id" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
-                            x-model="form.department_id">
-                        <option value="">Select department</option>
-                        <option value="1">Human Resources</option>
-                        <option value="2">Information Technology</option>
-                        <option value="3">Finance</option>
-                        <option value="4">Marketing</option>
-                        <option value="5">Operations</option>
-                        <option value="6">Sales</option>
-                    </select>
-                </div>
-
-                <!-- Password Fields -->
-                <div class="grid grid-cols-1 gap-4">
-                    <div x-data="{ showPassword: false }">
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-lock mr-2 text-gray-400"></i>Password
-                        </label>
-                        <div class="relative">
-                            <input id="password" name="password" :type="showPassword ? 'text' : 'password'" required 
-                                   class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
-                                   placeholder="Enter your password"
-                                   x-model="form.password"
-                                   @input="checkPasswordStrength">
-                            <button type="button" @click="showPassword = !showPassword" 
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                            </button>
-                        </div>
-                        <!-- Password Strength Indicator -->
-                        <div x-show="form.password" class="mt-2">
-                            <div class="flex space-x-1">
-                                <div class="h-2 flex-1 rounded" :class="passwordStrength >= 1 ? 'bg-red-400' : 'bg-gray-200'"></div>
-                                <div class="h-2 flex-1 rounded" :class="passwordStrength >= 2 ? 'bg-yellow-400' : 'bg-gray-200'"></div>
-                                <div class="h-2 flex-1 rounded" :class="passwordStrength >= 3 ? 'bg-green-400' : 'bg-gray-200'"></div>
-                            </div>
-                            <p class="text-sm mt-1" :class="passwordStrength >= 3 ? 'text-green-600' : passwordStrength >= 2 ? 'text-yellow-600' : 'text-red-600'">
-                                <span x-text="passwordStrengthText"></span>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div x-data="{ showPassword: false }">
-                        <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-lock mr-2 text-gray-400"></i>Confirm Password
-                        </label>
-                        <div class="relative">
-                            <input id="confirm_password" name="confirm_password" :type="showPassword ? 'text' : 'password'" required 
-                                   class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
-                                   placeholder="Confirm your password"
-                                   x-model="form.confirm_password"
-                                   @input="checkPasswordMatch">
-                            <button type="button" @click="showPassword = !showPassword" 
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                            </button>
-                        </div>
-                        <div x-show="form.confirm_password && !passwordsMatch" class="mt-2 text-sm text-red-600">
-                            <i class="fas fa-times mr-1"></i>
-                            Passwords do not match
-                        </div>
-                        <div x-show="form.confirm_password && passwordsMatch" class="mt-2 text-sm text-green-600">
-                            <i class="fas fa-check mr-1"></i>
-                            Passwords match
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Terms and Conditions -->
-                <div class="flex items-start">
-                    <input type="checkbox" required class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500" x-model="form.terms">
-                    <label class="ml-2 text-sm text-gray-600">
-                        I agree to the <a href="#" class="text-blue-600 hover:text-blue-500">Terms of Service</a> and 
-                        <a href="#" class="text-blue-600 hover:text-blue-500">Privacy Policy</a>
-                    </label>
-                </div>
-
-                <!-- Error Messages -->
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center animate-fade-in">
-                            <i class="fas fa-exclamation-circle mr-2"></i>
-                            <span>{{ message }}</span>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-                <!-- Submit Button -->
-                <button type="submit" 
-                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-                        :disabled="loading || !isFormValid"
-                        :class="(loading || !isFormValid) ? 'cursor-not-allowed' : ''">
-                    <span x-show="!loading" class="flex items-center justify-center">
-                        <i class="fas fa-user-plus mr-2"></i>
-                        Create Account
-                    </span>
-                    <span x-show="loading" class="flex items-center justify-center">
-                        <i class="fas fa-spinner fa-spin mr-2"></i>
-                        Creating Account...
-                    </span>
-                </button>
-
-                <!-- Divider -->
-                <div class="relative my-6">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-300"></div>
-                    </div>
-                    <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-white text-gray-500">Already have an account?</span>
-                    </div>
-                </div>
-
-                <!-- Sign In Link -->
-                <div class="text-center">
-                    <a href="{% url 'login' %}" class="inline-flex items-center justify-center w-full py-3 px-6 border-2 border-blue-600 text-blue-600 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-200 transform hover:scale-[1.02]">
-                        <i class="fas fa-sign-in-alt mr-2"></i>
-                        Sign In Instead
-                    </a>
-                </div>
-            </form>
         </div>
 
         <!-- Footer -->

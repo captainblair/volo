@@ -1,3 +1,5 @@
+<div class="hidden md:flex flex-col justify-center items-center w-1/2 bg-gray-50 border-r border-gray-200 p-12">
+<div class="hidden md:flex flex-col justify-start items-center w-1/2 bg-gray-50 border-r border-gray-200 p-12 pt-20">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,66 +36,63 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         @keyframes slideUp {
             from { transform: translateY(30px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, #f97316 0%, #dc2626 50%, #ec4899 100%);
-        }
         .glass-effect {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 8px 0 rgba(31,41,55,0.04);
+            border-radius: 8px;
         }
     </style>
 </head>
-<body class="font-sans gradient-bg min-h-screen flex items-center justify-center p-4">
-    <!-- Animated Background Elements -->
-    <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full animate-float"></div>
-        <div class="absolute top-40 right-20 w-16 h-16 bg-white/10 rounded-full animate-float" style="animation-delay: 2s;"></div>
-        <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white/10 rounded-full animate-float" style="animation-delay: 4s;"></div>
-        <div class="absolute bottom-40 right-1/3 w-24 h-24 bg-white/10 rounded-full animate-float" style="animation-delay: 1s;"></div>
-    </div>
 
-    <div class="relative z-10 w-full max-w-md">
-        <!-- Back to Home Link -->
-        <div class="mb-8 text-center">
-            <a href="{% url 'home' %}" class="inline-flex items-center text-white/80 hover:text-white transition-colors duration-200">
-                <i class="fas fa-arrow-left mr-2"></i>
-                Back to Home
-            </a>
-        </div>
+<body class="font-sans bg-gradient-to-br from-blue-100 via-sky-200 to-indigo-100 min-h-screen flex items-center justify-center p-4">
 
-        <!-- Login Card -->
-        <div class="glass-effect rounded-3xl shadow-2xl p-8 animate-slide-up">
-            <!-- Logo and Header -->
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                </div>
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-                <p class="text-gray-600">Sign in to your Volo Africa account</p>
+    <div class="w-full min-h-screen flex bg-white">
+        <!-- Left: ALX Admissions Portal Content -->
+        <div class="hidden md:flex flex-col justify-center items-center w-1/2 bg-gray-50 border-r border-gray-200 p-12">
+            <!-- Logo Placeholder -->
+            <div class="mb-6">
+                <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-bold text-gray-500">ALX</div>
             </div>
-
-            <!-- Login Form -->
-            <form method="post" class="space-y-6" x-data="{ loading: false }" @submit="loading = true">
-                {% csrf_token %}
-                
-                <!-- Username Field -->
-                <div>
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">ALX Admissions Portal</h1>
+            <h2 class="text-lg text-gray-700 mb-4">Welcome back!</h2>
+            <p class="text-gray-600 max-w-md text-center mb-6">
+                This is the ALX Admissions Portal, your first step towards gaining some of today's most sought-after skills and joining our incredible talent community.<br><br>
+                If you already have an account, log in entering your email and password or via Google and GitHub.<br><br>
+                If this is your first time on the admissions portal, please scroll down and click the "Sign up" button to set up your account.
+            </p>
+        </div>
+        <!-- Right: Login Form -->
+        <div class="flex flex-col justify-center items-center w-full md:w-1/2 p-8">
+            <div class="w-full max-w-md">
+                <div class="mb-8 text-center">
+                    <a href="{% url 'home' %}" class="inline-flex items-center text-gray-500 hover:text-gray-700 transition-colors duration-200">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Back to Home
+                    </a>
+                </div>
+                <div class="bg-white rounded-xl shadow p-8 animate-slide-up border border-gray-100">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Sign In</h1>
+                        <p class="text-gray-600">Sign in to your ALX Admissions Portal account</p>
+                    </div>
+                    <form method="post" class="space-y-5" x-data="{ loading: false }" @submit="loading = true">
+                        {% csrf_token %}
+                        <!-- Username Field -->
+                        <div>
                     <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-user mr-2 text-gray-400"></i>Username
                     </label>
                     <input id="username" name="username" type="text" required 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white" 
                            placeholder="Enter your username">
                 </div>
 
@@ -104,7 +103,7 @@
                     </label>
                     <div class="relative">
                         <input id="password" name="password" :type="showPassword ? 'text' : 'password'" required 
-                               class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white/50 backdrop-blur-sm" 
+                               class="w-full px-3 py-2 pr-12 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white" 
                                placeholder="Enter your password">
                         <button type="button" @click="showPassword = !showPassword" 
                                 class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
